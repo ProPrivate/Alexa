@@ -10,7 +10,7 @@ from config import adminlist, chatstats, clean, userstats
 from pyrogram.enums import ChatMembersFilter
 from strings import get_command
 from AlexaMusic import app, userbot
-from AlexaMusic.misc import SUDOERS, SUBSCRIBERS
+from AlexaMusic.misc import SUDOERS
 from AlexaMusic.utils.database import (
     get_active_chats,
     get_authuser_names,
@@ -29,7 +29,6 @@ from AlexaMusic.utils.formatters import alpha_to_int
 from config import OWNER_ID
 
 BROADCAST_COMMAND = get_command("BROADCAST_COMMAND")
-PAID_BROADCAST_COMMAND = get_command("PAID_BROADCAST_COMMAND")
 AUTO_DELETE = config.CLEANMODE_DELETE_MINS
 AUTO_SLEEP = 5
 IS_BROADCASTING = False
@@ -197,143 +196,6 @@ async def braodcast_message(client, message, _):
         except:
             pass
     IS_BROADCASTING = False
-
-#my code =======================================
-
-@app.on_message(filters.command(PAID_BROADCAST_COMMAND))
-@language
-async def braodcast_message(client, message, _):
-    if message.from_user.id not in SUBSCRIBERS:
-        return await message.reply_text(
-            "» **😁 ʜᴇʜᴇʜᴇ ᴏɴʟʏ ᴍʏ SAUBS ᴄᴀɴ ʙʀᴏᴀᴅᴄᴀsᴛ**\n» 🤫  ᴊᴏɪɴ @ProBotGc ғᴏʀ ᴘʀᴏᴍᴏᴛɪᴏɴ"
-        )
-    global IS_BROADCASTING
-    if message.reply_to_message:
-        x = message.reply_to_message.id
-        y = message.chat.id
-    else:
-        if len(message.command) < 2:
-            return await message.reply_text(_["broad_5"])
-        query = message.text.split(None, 1)[1]
-        if "-pin" in query:
-            query = query.replace("-pin", "")
-        if "-nobot" in query:
-            query = query.replace("-nobot", "")
-        if "-pinloud" in query:
-            query = query.replace("-pinloud", "")
-        if "-assistant" in query:
-            query = query.replace("-assistant", "")
-        if "-user" in query:
-            query = query.replace("-user", "")
-        if query == "":
-            return await message.reply_text(_["broad_6"])
-
-    IS_BROADCASTING = True
-
-    # Bot broadcast inside chats
-    if "-nobot" not in message.text:
-        sent = 0
-        pin = 0
-        chats = []
-        schats = await get_served_chats()
-        for chat in schats:
-            chats.append(int(chat["chat_id"]))
-        for i in chats:
-            if i == config.LOG_GROUP_ID:
-                continue
-            try:
-                m = (
-                    await app.forward_messages(i, y, x)
-                    if message.reply_to_message
-                    else await app.send_message(i, text=query)
-                )
-                if "-pin" in message.text:
-                    try:
-                        await m.pin(disable_notification=True)
-                        pin += 1
-                    except Exception:
-                        continue
-                elif "-pinloud" in message.text:
-                    try:
-                        await m.pin(disable_notification=False)
-                        pin += 1
-                    except Exception:
-                        continue
-                sent += 1
-            except FloodWait as e:
-                flood_time = int(e.x)
-                if flood_time > 200:
-                    continue
-                await asyncio.sleep(flood_time)
-            except Exception:
-                continue
-        try:
-            await message.reply_text(_["broad_1"].format(sent, pin))
-        except:
-            pass
-
-    # Bot broadcasting to users
-    if "-user" in message.text:
-        susr = 0
-        served_users = []
-        susers = await get_served_users()
-        for user in susers:
-            served_users.append(int(user["user_id"]))
-        for i in served_users:
-            try:
-                m = (
-                    await app.forward_messages(i, y, x)
-                    if message.reply_to_message
-                    else await app.send_message(i, text=query)
-                )
-                susr += 1
-            except FloodWait as e:
-                flood_time = int(e.x)
-                if flood_time > 200:
-                    continue
-                await asyncio.sleep(flood_time)
-            except Exception:
-                pass
-        try:
-            await message.reply_text(_["broad_7"].format(susr))
-        except:
-            pass
-
-    # Bot broadcasting by assistant
-    if "-assistant" in message.text:
-        aw = await message.reply_text(_["broad_2"])
-        text = _["broad_3"]
-        from AlexaMusic.core.userbot import assistants
-
-        for num in assistants:
-            sent = 0
-            client = await get_client(num)
-            async for dialog in client.get_dialogs():
-                if dialog.chat.id == config.LOG_GROUP_ID:
-                    continue
-                try:
-                    (
-                        await client.forward_messages(dialog.chat.id, y, x)
-                        if message.reply_to_message
-                        else await client.send_message(dialog.chat.id, text=query)
-                    )
-                    sent += 1
-                except FloodWait as e:
-                    flood_time = int(e.x)
-                    if flood_time > 200:
-                        continue
-                    await asyncio.sleep(flood_time)
-                except Exception as e:
-                    print(e)
-                    continue
-            text += _["broad_4"].format(num, sent)
-        try:
-            await aw.edit_text(text)
-        except:
-            pass
-    IS_BROADCASTING = False
-
-#code end ===========================
 
 
 async def auto_clean():

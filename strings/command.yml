@@ -47,11 +47,6 @@ ADDSUDO_COMMAND : ["addsudo"]
 DELSUDO_COMMAND : ["delsudo", "rmsudo"]
 SUDOUSERS_COMMAND : ["sudolist", "listsudo"]
 
-#subs command
-ADDSUB_COMMAND : ["addsub"]
-DELSUB_COMMAND : ["delsub", "rmsub"]
-PAID_BROADCAST_COMMAND : ["sublist", "listsub"]
-
 #Broadcast 
 BROADCAST_COMMAND : ["broadcast", "gcast"]
 
