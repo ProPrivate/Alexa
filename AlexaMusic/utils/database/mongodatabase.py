@@ -14,6 +14,7 @@ usersdb = mongodb.tgusersdb
 playlistdb = mongodb.playlist
 blockeddb = mongodb.blockedusers
 privatedb = mongodb.privatechats
+paidsubsdb = mongodb.paidsubs
 
 
 # Playlist
@@ -425,3 +426,31 @@ async def remove_banned_user(user_id: int):
     if not is_gbanned:
         return
     return await blockeddb.delete_one({"user_id": user_id})
+
+#my code ---------------
+
+# Subscribers
+async def get_subs() -> list:
+    subscribers = await paidsubs.find_one({"subs": "subs"})
+    if not subscribers:
+        return []
+    return subscribers["subscribers"]
+
+
+async def add_subs(user_id: int) -> bool:
+    subscribers = await get_subs()
+    subscribers.append(user_id)
+    await paidsubs.update_one(
+        {"subs": "subs"}, {"$set": {"subscribers": subscribers}}, upsert=True
+    )
+    return True
+
+
+async def remove_subs(user_id: int) -> bool:
+    subscribers = await get_subs()
+    subscribers.remove(user_id)
+    await paidsubs.update_one(
+        {"subs'": "subs'"}, {"$set": {"subscribers": subscribers}}, upsert=True
+    )
+    return True
+

