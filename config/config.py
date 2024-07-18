@@ -30,7 +30,7 @@ BOT_ID = getenv("BOT_ID")
 
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
 
-UPSTREAM_REPO = getenv("UPSTREAM_REPO", "https://github.com/TheTeamAlexa/AlexaMusic")
+UPSTREAM_REPO = getenv("UPSTREAM_REPO", "https://github.com/TheTeamAlexa/AlexaMusic") 
 
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "master")
 

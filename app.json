@@ -7,8 +7,8 @@
     "telegram",
     "bot",
     "Alexa",
-    "alexamusic",
-    "alexamusicbot",
+    "ProMusic",
+    "ProMusicbot",
     "pyrogram"
     ],
     "env": {
@@ -59,7 +59,7 @@
       },
       "UPSTREAM_REPO": {
         "description": "If you dont know this, Leave as it is",
-        "value": "https://github.com/TheTeamAlexa/AlexaMusic",
+        "value": "https://github.com/TheTeamAlexa/AlexaMusic", 
         "required": true
       },
       "LOG_GROUP_ID": {
